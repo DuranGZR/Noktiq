@@ -1,0 +1,105 @@
+{
+  "testedAt": "2026-11-01T11:33:33.482Z",
+  "sdkSha256": "0eb85d61e600f731a0f5343695dc29615e425c8cda1020077ec0c37e99970c7b",
+  "cases": [
+    {
+      "name": "next14",
+      "next": "14.2.35",
+      "react": "18.3.1",
+      "engines": [
+        "webpack",
+        "turbopack"
+      ],
+      "node": "v24.22.2",
+      "status": "passed",
+      "production": "no toolbar or source attributes"
+    },
+    {
+      "name": "next15-legacy",
+      "next": "15.2.9",
+      "react": "18.3.1",
+      "engines": [
+        "webpack",
+        "turbopack"
+      ],
+      "node": "v24.22.2",
+      "status": "passed",
+      "production": "no toolbar or source attributes"
+    },
+    {
+      "name": "next16",
+      "next": "16.4.3",
+      "react": "19.2.1",
+      "engines": [
+        "webpack",
+        "turbopack"
+      ],
+      "node": "v24.22.2",
+      "status": "passed",
+      "production": "no toolbar or source attributes"
+    },
+    {
+      "name": "next15",
+      "next": "15.5.28",
+      "react": "18.3.1",
+      "engines": [
+        "webpack",
+        "turbopack"
+      ],
+      "node": "v24.22.2",
+      "status": "passed",
+      "production": "no toolbar or source attributes"
+    },
+    {
+      "name": "react18-vite6",
+      "react": "18.3.1",
+      "vite": "6.4.1",
+      "plugin": "4.7.0",
+      "node": "v24.22.2",
+      "status": "passed",
+      "production": "no toolbar or source attributes"
+    },
+    {
+      "name": "react19-vite7",
+      "react": "19.2.1",
+      "vite": "7.3.1",
+      "plugin": "5.1.1",
+      "node": "v24.22.2",
+      "status": "passed",
+      "production": "no toolbar or source attributes"
+    },
+    {
+      "name": "react-three",
+      "react": "19.2.1",
+      "vite": "7.3.1",
+      "plugin": "5.1.1",
+      "three": true,
+      "node": "v24.22.2",
+      "status": "passed",
+      "production": "no toolbar or source attributes"
+    },
+    {
+      "name": "vue34-vite6",
+      "vue": "3.4.38",
+      "vite": "6.4.1",
+      "plugin": "5.2.4",
+      "node": "v24.22.2",
+      "status": "passed",
+      "production": "no toolbar or source attributes"
+    },
+    {
+      "name": "nuxt3",
+      "nuxt": "3.21.11",
+      "node": "v24.22.2",
+      "status": "passed",
+      "production": "no toolbar or source attributes"
+    },
+    {
+      "name": "nuxt4",
+      "nuxt": "4.6.3",
+      "node": "v24.22.2",
+      "status": "passed",
+      "production": "no toolbar or source attributes"
+    }
+  ]
+}

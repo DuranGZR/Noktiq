@@ -1,0 +1,2 @@
+lab-main.tsx:9:61
+  return <article data-testid={`card-${name}`}><p>{name}</p><button data-testid="repeated-action" onClick={action}><span>Kaydet</span></button></article>;

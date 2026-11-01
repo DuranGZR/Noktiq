@@ -1,0 +1,2 @@
+LabCard.vue:6:59
+  <article :data-testid="`card-${name}`"><p>{{ name }}</p><button data-testid="repeated-action" @click="$emit('action')"><span>Kaydet</span></button></article>

@@ -1,0 +1,101 @@
+# Noktiq
+
+**Point. Note. Paste. Visual change requests for React and Vue.**
+
+Select an element on your development website, describe the change and copy a request into your coding agent. Noktiq includes the source file, line and column when available, plus selectors and page context. No AI account or API key is required.
+
+{{INSTALL_STATUS}}
+
+## Why Noktiq exists
+
+A small visual change can turn into a long explanation: which button, which card, which component? Repeating the description and searching for the wrong target can spend more time and tokens than the change itself.
+
+Noktiq grew out of that frustration. Point at the element, write the change where you see it, and copy its context into the coding agent you already use. **Less time explaining where. More context for making the change.**
+
+The aim is fewer clarification rounds, unnecessary code searches and avoidable tokens across a complete task. A structured request may be longer than a short prompt; any saving depends on the agent, model, project and request. We have not published a token-savings benchmark or percentage, and savings are not guaranteed.
+
+## React + Vite
+
+```tsx
+import { Noktiq } from 'noktiq/react';
+
+export default function App() {
+  return <>{/* Your application */}<Noktiq enabled={import.meta.env.DEV} /></>;
+}
+```
+
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { noktiq } from 'noktiq/vite';
+
+export default defineConfig({ plugins: [noktiq(), react()] });
+```
+
+## Vue + Vite
+
+```vue
+<script setup>
+import { Noktiq } from 'noktiq/vue';
+const isDev = import.meta.env.DEV;
+</script>
+
+<template>
+  <!-- Your application -->
+  <Noktiq :enabled="isDev" />
+</template>
+```
+
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import { noktiq } from 'noktiq/vite';
+
+export default defineConfig({ plugins: [noktiq(), vue()] });
+```
+
+Start your application's development server (usually `npm run dev`) and open its URL. Restart it after editing plugin configuration. Installing the package alone does not display the mascot.
+
+## Development and production
+
+Keep the development condition in the examples; you do not need to delete the component before deploying.
+
+| Environment | With the documented development condition |
+| --- | --- |
+| Development server | Nok appears for selection and notes. |
+| Production build/local preview | Nok stays hidden, including on localhost. |
+| Deployed production build | Visitors do not see Nok, its menu or pins. |
+
+`enabled` defaults to `false`. Vite uses `import.meta.env.DEV`; Next.js uses `process.env.NODE_ENV === 'development'`; Nuxt uses `import.meta.dev`. Hardcoding `enabled` to true mounts the toolbar in production too. The `-D` install flag does not replace the runtime condition. The source plugin skips production builds; hiding the UI does not guarantee removal of all library JavaScript from a bundle.
+
+## Workflow
+
+1. Click Nok to enter selection mode.
+2. Select an element, enter your request and save the note.
+3. Copy one note or all notes into your existing coding agent.
+
+Drag Nok to reposition it. Notes support text, multiple elements and area selection; parent navigation; source links; live target status; rebinding; computed styles; and configurable output detail. Notes stay in your browser and are synchronized between tabs on the same origin.
+
+## Compatibility
+
+Tested examples cover React 18/19, Vue 3.4/3.5, Next.js 14/15/16, Nuxt 3/4, Vite 6/7/8 and Webpack 5. These tests do not guarantee every version or component combination. Closed Shadow DOM, cross-origin iframes and individual canvas/3D objects are outside the supported selection scope.
+
+For Next.js, Nuxt, Webpack, editor configuration and all options, see the packaged [developer guide (Turkish)](docs/guide.tr.md). The [captured request](docs/walkthrough-request.md) shows a real output example. Demo recordings and repository-only validation reports are intentionally excluded from the npm archive.
+
+## Common questions
+
+**No mascot?** Render the component once with a true development condition. A production preview keeps it hidden. The source plugin alone does not create the toolbar.
+
+**No source line?** Configure the plugin and restart the development server. Unsupported source patterns fall back to known component/ancestor context and DOM identifiers. Captured lines identify rendering code; CSS and event handlers may live elsewhere.
+
+**No clipboard permission?** Copy manually from the selectable output preview using Ctrl/Cmd+C.
+
+**Where are notes stored?** In the browser, separated by page and origin; changing ports or domains changes the note group. Saved changes synchronize across tabs. Use **Notes** for individual edit/copy/delete actions and **Clear all** to remove the page's stored notes.
+
+## Privacy and license
+
+Noktiq does not send notes to an AI service. Inspect copied context before sharing it, and mark sensitive regions with `data-noktiq-private`. Browser storage failures are reported; memory-only notes are lost on a full reload.
+
+Source-available under [PolyForm Shield 1.0.0](LICENSE). Copyright (c) 2026 Duran Gezer. See [contributing](CONTRIBUTING.md) and [security reporting](SECURITY.md).

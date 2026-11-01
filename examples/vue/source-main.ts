@@ -1,0 +1,21 @@
+import { createApp, h } from 'vue';
+import { Noktiq } from 'noktiq/vue';
+import RenderCases from './SourceRender.vue';
+import DynamicCases from './SourceDynamic.vue';
+import External from './SourceExternal.vue';
+import FileOnly from './SourceFileOnly.vue';
+import Fallthrough from './SourceFallthrough.vue';
+import Directive from './SourceDirective.vue';
+import Cached from './SourceCached.vue';
+import Setup from './SourceSetup.vue';
+import Kebab from './SourceKebab.vue';
+import '../shared.css';
+import '../lab.css';
+const main = document.createElement('main'); main.innerHTML = '<header class="lab-heading"><div><h1>Vue · Kaynak çözümleme</h1><p>Şablon, render fonksiyonu, dinamik bileşen ve dosya yedeği.</p></div><a href="/lab.html">Laboratuvara dön</a></header>';
+const grid=document.createElement('div'); grid.className='lab-grid'; main.append(grid); document.body.append(main);
+for(const component of [RenderCases, DynamicCases, External, FileOnly, Kebab]) { const section=document.createElement('section'); section.className='lab-card';grid.append(section);createApp(component).mount(section); }
+const tools=document.createElement('div');document.body.append(tools);createApp({render:()=>h(Noktiq,{enabled:import.meta.env.DEV})}).mount(tools);
+const extra=document.createElement('section');extra.className='lab-card';grid.append(extra);createApp(Fallthrough,{class:'inherited-class'}).mount(extra);
+const directed=document.createElement('section');directed.className='lab-card';grid.append(directed);createApp(Directive,{class:'directive-class'}).mount(directed);
+const cached=document.createElement('section');cached.className='lab-card';grid.append(cached);createApp(Cached,{class:'cached-class'}).mount(cached);
+const setup=document.createElement('section');setup.className='lab-card';grid.append(setup);createApp(Setup,{class:'setup-class'}).mount(setup);

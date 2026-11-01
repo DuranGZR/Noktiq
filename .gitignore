@@ -1,0 +1,35 @@
+node_modules/
+dist/
+test-results/
+playwright-report/
+*.tgz
+.local-validation/
+.next*/
+.nuxt/
+.output/
+.vite/
+.turbo/
+.vercel/
+.netlify/
+*.tsbuildinfo
+
+# Credentials and machine-local configuration
+.env
+.env.*
+!.env.example
+.npmrc
+**/.claude/settings.local.json
+.codex/
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+
+# Local tooling output
+coverage/
+*.log
+.DS_Store
+Thumbs.db
+.idea/
