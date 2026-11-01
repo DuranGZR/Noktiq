@@ -250,13 +250,14 @@ The handoff includes what you selected, where it lives and what you want changed
 ```text
 ## 1. button
 Source: main.tsx:25:15
-Source kind: selected element definition
 Selector: #demo-cta
 Visible text: "Explore our work ↗"
 Requested change: "Give this button a 12px radius and more horizontal padding."
 ```
 
-The [full captured request](docs/walkthrough-request.md) also includes the page, viewport, component context and second note. A source location identifies the code that creates an element; selectors and row identifiers distinguish repeated instances.
+Standard output keeps the source, selector, page, viewport, non-empty text and instance identifiers. Framework component chains and computed styles are reserved for **Detailed**. When an exact element source is available, Standard also omits secondary component-file hints and CSS class lists; otherwise it retains those fallback hints. Compact preserves target identity and text while omitting viewport and style details. File-path-only and class-only copying remain available.
+
+The [recorded request](docs/walkthrough-request.md) shows the earlier output used in the video. A source location identifies the code that creates an element; selectors and row identifiers distinguish repeated instances. These formatting rules are shared by React, Vue and their supported build integrations, for both individual and combined copying.
 
 When an exact source line is unavailable, Noktiq labels ancestor or component context rather than presenting it as the selected element's definition. Your agent should verify the captured location before editing.
 

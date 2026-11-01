@@ -55,6 +55,54 @@ test('group exports preserve every locator and styles appear only in detailed ou
   assert.equal(exportNotes([{ ...note, source: undefined }], { format: 'source' }), '');
 });
 
+test('React and Vue standard output prioritizes exact source without wrapper noise', () => {
+  for (const framework of ['react', 'vue']) {
+    const target = { ...note, sourceKind: 'element', text: '',
+      components: { framework, names: ['LayoutRouter', 'Suspense', 'About', 'SectionReveal', 'motion.div'] },
+      componentFile: { file: 'components/animations/SectionReveal.tsx', name: 'SectionReveal' },
+      classes: ['w-[120px]', 'h-[120px]', 'rounded-full'],
+      identifiers: { 'data-row-id': 'profile' }, ancestors: [{ tag: 'section', identifiers: { id: 'about' } }] };
+    const before = JSON.stringify(target);
+    for (const detail of ['compact', 'standard']) {
+      const text = exportNotes([target], { detail });
+      for (const value of [target.source, target.selector, target.page, 'profile', 'about', target.note]) assert.ok(text.includes(value));
+      assert.doesNotMatch(text, /components:|Component file:|Source kind:|CSS classes:|Visible text:/);
+      assert.match(text, /Apply only the requested changes/);
+    }
+    const detailed = exportNotes([target], { detail: 'detailed' });
+    assert.match(detailed, /components: "LayoutRouter"/);
+    assert.match(detailed, /Component file: "components\/animations\/SectionReveal.tsx"/);
+    assert.match(detailed, /CSS classes:/);
+    assert.equal(JSON.stringify(target), before, 'Copying must not change stored context');
+    assert.equal(exportNotes([target], { format: 'classes' }), target.classes.join('\n'));
+  }
+});
+
+test('fallback context and uncertain source warnings survive simpler exports', () => {
+  const target = { ...note, source: undefined, classes: ['payment'], componentFile: { file: 'src/Owner.vue' },
+    label: 'Pay now', identifiers: { 'data-row-id': '42' },
+    boundaries: [{ kind: 'frame', selector: '#preview', page: 'http://localhost:3000/frame' }, { kind: 'shadow', selector: 'payment-card' }] };
+  const text = exportNotes([target]);
+  for (const value of ['exact element line unavailable', 'Component file:', 'src/Owner.vue', 'CSS classes: ["payment"]', 'Accessible label: "Pay now"']) assert.ok(text.includes(value));
+  for (const detail of ['compact', 'standard', 'detailed']) {
+    const group = { ...note, kind: 'group', targets: [target, { ...target, selector: '#second', source: note.source, sourceKind: 'component-usage' }] };
+    const output = exportNotes([group], { detail });
+    for (const value of ['Boundary path:', 'payment-card', '"data-row-id":"42"', '#second', 'component usage; not the native element definition']) assert.ok(output.includes(value));
+    assert.equal((output.match(/Requested change:/g) || []).length, 1);
+    assert.match(exportNotes([{ ...note, sourceKind: 'ancestor' }], { detail }), /ancestor element; not the selected element definition/);
+    assert.match(exportNotes([{ ...note, sourceKind: 'component' }], { detail }), /component location; exact element line unknown/);
+  }
+  assert.match(exportNotes([{ ...target, componentFile: undefined }]), /Source: unavailable/);
+});
+
+test('selected text and accessible labels are not repeated in any output detail', () => {
+  for (const detail of ['compact', 'standard', 'detailed']) {
+    const text = exportNotes([{ ...note, selectedText: 'Hello', label: 'Hello', textRange: { start: 0, end: 5 } }], { detail });
+    assert.match(text, /Selected text: "Hello"/);
+    assert.doesNotMatch(text, /Visible text:|Accessible label:/);
+  }
+});
+
 test('new stored context rejects invalid boundaries, nested groups and untrusted styles', () => {
   const read = item => readNotes({ getItem: () => JSON.stringify([item]) }, 'key', note.page);
   assert.equal(read({ ...note, targets: [{ ...note, source: {} }] }).length, 0);
@@ -95,7 +143,7 @@ test('page keys exclude URL secrets', () => {
 test('output includes captured identity and distinguishes ancestor source locations', () => {
   const output = exportNotes([{ ...note, sourceScope: 'button', identifiers: { 'data-testid': 'pay' }, classes: ['pay-button'],
     role: 'button', label: 'Pay\nnow', components: { framework: 'vue', names: ['CheckoutPage', 'PaymentForm', 'PaymentButton'] } }]);
-  assert.match(output, /Vue components: "CheckoutPage" > "PaymentForm" > "PaymentButton"/);
+  assert.doesNotMatch(output, /Vue components:/);
   assert.match(output, /Identifiers: \{"data-testid":"pay"\}/);
   assert.match(output, /Source scope: ancestor <button>/);
   assert.ok(output.includes('Accessible label: "Pay\\nnow"'));

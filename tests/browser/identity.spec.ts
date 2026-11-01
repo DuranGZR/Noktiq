@@ -30,9 +30,19 @@ for (const [framework, port] of [['React', 5173], ['Vue', 5174]] as const) {
     await page.getByRole('button', { name: 'Show notes', exact: true }).click();
     await page.getByRole('button', { name: 'Copy all notes', exact: true }).click();
     const output = await page.getByRole('textbox', { name: 'Output for your coding agent' }).inputValue();
-    expect(output).toContain(`${framework} components:`);
-    expect(output).toContain('"PaymentButton"');
+    expect(output).not.toContain('components:');
+    expect(output).not.toContain('Component file:');
+    expect(output).toContain(`Source: ${saved.source}`);
     expect(output).toContain('"data-testid":"checkout-pay"');
+    await page.getByRole('button', { name: 'Tools and settings' }).click();
+    await page.getByLabel('Output detail').selectOption('detailed');
+    await page.getByRole('button', { name: 'Close', exact: true }).click();
+    await page.getByRole('button', { name: 'Show notes', exact: true }).click();
+    await page.getByRole('button', { name: 'Copy all notes', exact: true }).click();
+    const detailed = await page.getByRole('textbox', { name: 'Output for your coding agent' }).inputValue();
+    expect(detailed).toContain(`${framework} components:`);
+    expect(detailed).toContain('"PaymentButton"');
+    expect(detailed).toContain(`Source: ${saved.source}`);
     await page.reload();
     // Both rendered buttons have identical evidence. Keep the note, rather than guess a pin target.
     await expect(page.locator('noktiq-toolbar .pin')).toHaveCount(0);

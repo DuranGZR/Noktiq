@@ -1,6 +1,6 @@
 {
   "name": "noktiq",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
@@ -64,7 +64,7 @@
     "dev:vue": "vite examples/vue --host 127.0.0.1 --port 5174 --strictPort",
     "build:examples": "vite build examples/react && vite build examples/vue",
     "prepack": "npm run build",
-    "prepublishOnly": "node -e \"throw new Error('Publish the reviewed archive with npm publish ./noktiq-0.1.0.tgz, not the source directory.')\"",
+    "prepublishOnly": "node -e \"throw new Error('Publish the reviewed .tgz archive created by npm run pack:release, not the source directory.')\"",
     "pack:release": "npm run build && node scripts/pack-package.mjs",
     "verify:compatibility": "node scripts/verify-compatibility.mjs",
     "prepare:ecosystem": "node scripts/prepare-ecosystem.mjs",

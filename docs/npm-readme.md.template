@@ -78,6 +78,8 @@ Keep the development condition in the examples; you do not need to delete the co
 
 Drag Nok to reposition it. Notes support text, multiple elements and area selection; parent navigation; source links; live target status; rebinding; computed styles; and configurable output detail. Notes stay in your browser and are synchronized between tabs on the same origin.
 
+Standard copying prioritizes source locations, selectors, non-empty text and instance identifiers. Full framework component chains and computed styles appear only in Detailed. Secondary component-file hints and CSS class lists are omitted from Standard when the exact element source is known; fallback hints and uncertainty warnings remain when it is not. Compact also omits viewport and style details. Individual and combined copying use the same rules in React and Vue, including supported Next.js, Nuxt, Vite and Webpack integrations.
+
 ## Compatibility
 
 Tested examples cover React 18/19, Vue 3.4/3.5, Next.js 14/15/16, Nuxt 3/4, Vite 6/7/8 and Webpack 5. These tests do not guarantee every version or component combination. Closed Shadow DOM, cross-origin iframes and individual canvas/3D objects are outside the supported selection scope.

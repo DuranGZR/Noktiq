@@ -1,11 +1,38 @@
 import { test, expect, type Page, type Locator } from '@playwright/test';
 
+// Exercise classic scrollbar geometry instead of Chromium's headless scrollbar hiding.
+test.use({launchOptions:{ignoreDefaultArgs:['--hide-scrollbars']}});
+
 const toolbar=(page:Page)=>page.locator('noktiq-toolbar');
 const brand=(page:Page)=>toolbar(page).locator('.brand');
 async function inside(locator:Locator,page:Page){const rect=(await locator.boundingBox())!;expect(rect.x).toBeGreaterThanOrEqual(0);expect(rect.y).toBeGreaterThanOrEqual(0);expect(rect.x+rect.width).toBeLessThanOrEqual(page.viewportSize()!.width+1);expect(rect.y+rect.height).toBeLessThanOrEqual(page.viewportSize()!.height+1)}
 async function annotate(page:Page,selector:string,note:string){await page.locator(selector).click();await page.getByRole('textbox',{name:'What should change?'}).fill(note);await page.getByRole('button',{name:'Save note',exact:true}).click(); await expect(page.locator('noktiq-toolbar .panel')).toBeHidden();}
 
 for(const [framework,port] of [['react',5173],['vue',5174]] as const){
+  test(`${framework}: scrollbar space cannot push a dragged mascot toward the left edge`,async({page,browserName})=>{
+    await page.goto(`http://127.0.0.1:${port}`);
+    await page.addStyleTag({content:'html{overflow:scroll!important;scrollbar-gutter:stable!important}body{min-height:2000px;min-width:1800px}::-webkit-scrollbar{width:16px;height:16px}'});
+    const viewport=await page.evaluate(()=>({width:document.documentElement.clientWidth,height:document.documentElement.clientHeight}));
+    // Firefox headless uses overlay scrollbars; Chromium/WebKit must exercise a reserved gutter.
+    if(browserName!=='firefox')expect(viewport.width).toBeLessThan(page.viewportSize()!.width);
+    const initial=(await brand(page).boundingBox())!;
+    await page.evaluate(async()=>{for(let i=0;i<12;i++){dispatchEvent(new Event('resize'));await new Promise(requestAnimationFrame)}});
+    const settled=(await brand(page).boundingBox())!;
+    expect(Math.abs(settled.x-initial.x)).toBeLessThan(1);
+    expect(Math.abs(settled.y-initial.y)).toBeLessThan(1);
+    for(const [x,y] of [[500,400],[1100,600]]){
+      const before=(await brand(page).boundingBox())!;
+      await page.mouse.move(before.x+before.width/2,before.y+before.height/2);await page.mouse.down();await page.mouse.move(x,y,{steps:15});await page.mouse.up();
+      await expect.poll(async()=>Math.abs((await brand(page).boundingBox())!.x+before.width/2-x)).toBeLessThan(1);
+      const anchor=(await brand(page).boundingBox())!;
+      await page.evaluate(async()=>{for(let i=0;i<12;i++){dispatchEvent(new Event('resize'));await new Promise(requestAnimationFrame)}});
+      const after=(await brand(page).boundingBox())!;
+      expect(Math.abs(after.x-anchor.x)).toBeLessThan(1);expect(Math.abs(after.y-anchor.y)).toBeLessThan(1);
+      await brand(page).focus();await page.keyboard.press('Shift+ArrowRight');
+      await expect.poll(async()=>Math.abs((await brand(page).boundingBox())!.x-after.x-16)).toBeLessThan(1);
+      await brand(page).click();await inside(toolbar(page).locator('.menu'),page);await page.keyboard.press('Escape');
+    }
+  });
   test(`${framework}: dragging preserves the mascot anchor and keeps menus/panels inside every corner`,async({page})=>{
     await page.addInitScript(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async()=>{}}}));
     await page.goto(`http://127.0.0.1:${port}`);

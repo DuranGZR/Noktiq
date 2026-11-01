@@ -23,7 +23,7 @@ export async function packPackage({ dryRun = false } = {}) {
   delete manifest.scripts;
   delete manifest.devDependencies;
   await writeFile(join(stage, 'package.json'), JSON.stringify(manifest, null, 2) + '\n');
-  const install = manifest.private ? 'Development preview: this package is not published yet. Build an archive with `npm run pack:release` in the source checkout, then install the generated `.tgz` with `npm install -D /absolute/path/to/noktiq-0.1.0.tgz`.' : '```sh\nnpm install -D ' + manifest.name + '\n```';
+  const install = manifest.private ? 'Development preview: this package is not published yet. Build an archive with `npm run pack:release` in the source checkout, then install the generated `.tgz` with `npm install -D /absolute/path/to/' + manifest.name + '-' + manifest.version + '.tgz`.' : '```sh\nnpm install -D ' + manifest.name + '\n```';
   await writeFile(join(stage, 'README.md'), (await readFile(join(root, 'docs/npm-readme.md.template'), 'utf8')).replace('{{INSTALL_STATUS}}', install));
   for (const file of paths.filter(file => file.endsWith('.md'))) {
     const text = await readFile(join(stage, file), 'utf8');

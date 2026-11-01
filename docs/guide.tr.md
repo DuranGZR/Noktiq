@@ -45,10 +45,10 @@ npm run pack:release
 Kendi uygulamanın klasöründe oluşturulan dosyanın yolunu ver:
 
 ```sh
-npm install -D /path/to/noktiq-0.1.0.tgz
+npm install -D /path/to/noktiq-0.1.1.tgz
 ```
 
-Windows’ta dosya yolu örneği: `npm install -D "C:\projects\noktiq\noktiq-0.1.0.tgz"`.
+Windows’ta dosya yolu örneği: `npm install -D "C:\projects\noktiq\noktiq-0.1.1.tgz"`.
 
 ### React
 
@@ -216,7 +216,7 @@ Yükleyici Webpack `mode: 'production'` olduğunda kaynak etiketlerini eklemez. 
 ### Öğeyi kaynak kodda bulma
 
 - Seçiciler önce `data-testid`, `data-test`, `data-test-id`, `data-qa`, `data-cy`, `data-component` ve uygun `id` değerlerini kullanır. Bilinen otomatik kimlik kalıpları atlanır. Her seçicinin yalnızca seçilen öğeyi bulduğu kontrol edilir; aynı kimliğin tekrarlandığı listelerde üst öğe kapsamı veya gerektiğinde öğe sırası kullanılır.
-- Çıktıya bulunan tanımlayıcılar, CSS sınıfları, açıkça verilmiş rol/erişilebilir etiket ve React/Vue bileşen zinciri eklenir. Geliştirme metaverisinden gelen gerçek isimler kullanılır; anonim bileşene isim veya kaynak dosyası uydurulmaz. Props, state, form değerleri ve tüm HTML dökümü toplanmaz.
+- Standart çıktıda kaynak, seçici, bulunan kimlikler ve boş olmayan metin/erişilebilir etiket korunur. Kesin öğe kaynağı varsa ikinci bileşen dosyası ipucu ve CSS sınıf listesi çıkarılır; kaynak belirsizse bu ipuçları korunur. Tam React/Vue bileşen zinciri yalnızca Detailed çıktıda yer alır. Geliştirme metaverisinden gelen gerçek isimler kullanılır; anonim bileşene isim veya kaynak dosyası uydurulmaz. Props, state, form değerleri ve tüm HTML dökümü toplanmaz.
 - React/Vue bileşen algılama geliştirme çalışma zamanlarının iç metaverisine dayanır ve sürümler arasında değişebilir. Erişilemezse bu alan atlanır; diğer öğe bilgileriyle akış devam eder. Tarayıcı testleri gerçek React 19 ve Vue 3.5 bileşenleriyle çalışır; React `memo`/`forwardRef` sarmalayıcıları da doğrulanır.
 - Sayfa değiştiğinde pinin bağlı olduğu öğenin kimliği yeniden doğrulanır. Eski yapısal seçici başka bir öğeye denk gelirse kaynak, metin ve kimlik bağlamıyla yalnızca tek bir eşleşme bulunduğunda pin geri bağlanır. Birbirinden ayırt edilemeyen tekrarlar varsa pin gizlenir, not listede korunur. Kaydırma sırasında aynı kimlik araması tekrar tekrar yapılmaz.
 
@@ -245,7 +245,6 @@ Maskot köşede göz kırpar, yakınındaki fareye bakar ve seçim sırasında o
 Page: http://localhost:5173/
 Selector: #hero-title
 Source: src/App.vue:18:5
-Vue components: "App" > "HeroSection"
 Identifiers: {"id":"hero-title"}
 Viewport: 1440 × 1000
 Visible text: "Küçük bir dokunuş. Daha iyi bir arayüz."
@@ -263,7 +262,7 @@ Kompakt menüdeki **⋯** düğmesi araçları açar; Nok’un çizimi ve not ak
 - **Multiple elements:** öğeleri tek tek aç/kapat; **Annotate selection** veya **Enter** ortak isteği oluşturur. Çıktıda her öğenin kendi seçicisi, kaynağı ve bağlamı bulunur. Bir grupta en fazla 50 öğe seçilir. Her hedefin aynı not numarasını taşıyan ayrı pini bulunur; bir hedef kaybolduğunda diğerleri kalır. Editör tıklanan pinin konumunu gösterir.
 - **Area:** sürükleyerek dikdörtgen çiz. Tamamen içinde kalan görünür öğeler seçilir; seçili üst öğenin çocukları tekrar eklenmez. Ardından ortak notunu yaz.
 - **Computed styles:** not editöründeki açılır bölümde hesaplanmış renk, font, boyut, padding, margin, gap ve yerleşim değerlerini gör. Değerler seçim anının görüntüsüdür; tüm CSS/HTML veya form değerleri toplanmaz.
-- **Output detail:** **Compact** seçici/kaynak/isteği, **Standard** bileşen ve kimlik bağlamını, **Detailed** ek olarak hesaplanmış stilleri, konumu ve yazı ofsetlerini içerir.
+- **Output detail:** **Compact** kaynak/seçici/isteğin yanında metni, ayırt edici kimlikleri ve iframe/Shadow DOM yollarını korur. **Standard** ekran boyutunu ve kaynak kesin değilse dosya/sınıf ipuçlarını ekler. **Detailed** tam bileşen zincirini, sınıfları, hesaplanmış stilleri, konumu ve yazı ofsetlerini içerir. Boş veya birbirinin aynısı olan metin alanları tekrarlanmaz. Üst öğe ve bileşen kullanım konumları kesin öğe kaynağı gibi sunulmaz. React, Vue ve desteklenen geliştirme araçları tek not ve tüm notları kopyalarken aynı kuralları kullanır.
 - **Copy format:** Markdown notları, yalnızca dosya/satır konumları veya yalnızca CSS sınıfları. Tekrarlanan yollar/sınıflar ayıklanır. Seçilen biçim için veri yoksa pano korunur ve açıklama gösterilir. Tek not ve tüm notlar aynı biçimi kullanır.
 - Nok’u sürükleyerek veya odaktayken **Shift+ok** ile taşı. **Hide pins / Show pins** notları silmeden görünürlüğü değiştirir.
 - **Pause page motion** CSS/Web Animations animasyonlarını ve oynayan videoları duraklatır. Sürdürme veya aracı kaldırma, yalnızca Noktiq’in durdurduklarını geri açar. Nok’un kendi animasyonları devam eder. Özel JavaScript oyun/animasyon döngüleri durdurulmaz.

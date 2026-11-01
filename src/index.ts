@@ -271,16 +271,22 @@ function createToolbar(options: NoktiqOptions): () => void {
     showHighlight(selected.element);
   }
 
+  function dockPosition() {
+    // CSS offsets exclude scrollbar space; viewport minus DOMRect accumulates that space on every layout.
+    const style = getComputedStyle(dock);
+    return { right: parseFloat(style.right), bottom: parseFloat(style.bottom) };
+  }
   function moveDock(right: number, bottom: number) {
     const rect = dock.getBoundingClientRect();
-    dock.style.right = `${Math.max(8, Math.min(innerWidth - rect.width - 8, right))}px`;
-    dock.style.bottom = `${Math.max(8, Math.min(innerHeight - rect.height - 8, bottom))}px`;
+    dock.style.right = `${Math.max(8, Math.min(document.documentElement.clientWidth - rect.width - 8, right))}px`;
+    dock.style.bottom = `${Math.max(8, Math.min(document.documentElement.clientHeight - rect.height - 8, bottom))}px`;
     positionPanel();
   }
   function layoutDock() {
     let rect = dock.getBoundingClientRect();
-    dock.style.right = `${Math.max(8, Math.min(innerWidth - rect.width - 8, innerWidth - rect.right))}px`;
-    dock.style.bottom = `${Math.max(8, Math.min(innerHeight - rect.height - 8, innerHeight - rect.bottom))}px`;
+    const position = dockPosition();
+    dock.style.right = `${Math.max(8, Math.min(document.documentElement.clientWidth - rect.width - 8, position.right))}px`;
+    dock.style.bottom = `${Math.max(8, Math.min(document.documentElement.clientHeight - rect.height - 8, position.bottom))}px`;
     rect = dock.getBoundingClientRect();
     if (!menu.hidden || menu.hasAttribute('data-closing')) {
       const width = menu.offsetWidth, height = menu.offsetHeight;
@@ -331,7 +337,7 @@ function createToolbar(options: NoktiqOptions): () => void {
     if (event.button !== 0 || !event.isPrimary) return;
     suppressToggle = false;
     suppressTouchClick = false;
-    const rect = dock.getBoundingClientRect(); dockDrag = { x: event.clientX, y: event.clientY, right: innerWidth - rect.right, bottom: innerHeight - rect.bottom, moved: false };
+    dockDrag = { x: event.clientX, y: event.clientY, ...dockPosition(), moved: false };
   });
   toggle.addEventListener('lostpointercapture', event => {
     if (event.target !== toggle || toggle.hasPointerCapture(event.pointerId)) return;
@@ -877,7 +883,7 @@ function createToolbar(options: NoktiqOptions): () => void {
     if (!shortcuts) return;
     if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'f') { event.preventDefault(); if (menu.hidden) openToolbar(); else closeToolbar(); return; }
     if (event.shiftKey && target === toggle && event.key.startsWith('Arrow')) {
-      event.preventDefault(); const rect = dock.getBoundingClientRect(); moveDock(innerWidth - rect.right + (event.key === 'ArrowLeft' ? 16 : event.key === 'ArrowRight' ? -16 : 0), innerHeight - rect.bottom + (event.key === 'ArrowUp' ? 16 : event.key === 'ArrowDown' ? -16 : 0)); return;
+      event.preventDefault(); const position = dockPosition(); moveDock(position.right + (event.key === 'ArrowLeft' ? 16 : event.key === 'ArrowRight' ? -16 : 0), position.bottom + (event.key === 'ArrowUp' ? 16 : event.key === 'ArrowDown' ? -16 : 0)); return;
     }
     if (menu.hidden || draft || rebinding || saving || event.ctrlKey || event.metaKey || event.altKey) return;
     const modes = { e: 'element', t: 'text', m: 'multi', a: 'area' } as const;
